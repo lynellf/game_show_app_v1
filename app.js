@@ -5,14 +5,25 @@
 // Get the elements you’ ll need from your HTML
 
 //     Get the element with the ID of qwerty and save it to a variable.
+const qwerty = document.querySelector('#qwerty'),
 //     Get the element with the ID of phrase and save it to a variable.
+phrase = document.querySelector('#phrase');
 //     Create a missed variable, initialized to 0, that you’ ll use later to keep track of the number of guesses the player has missed
 //         (remember,if the player guesses wrong 5 times, they lose the game)
+let missed = 0;
+const startButton = document.querySelector('.btn__reset');;
 
 // Attach a event listener to the“ Start Game” button to hide the start screen overlay.
+startButton.addEventListener('click', (event) => {
+    const startOverlay = event.target.parentNode;
+    if(startOverlay.className === 'start') {
+        startOverlay.style.opacity = '0';
+    }
+});
 
 // Create a phrases array that contains at least 5 different phrases as strings.
 //     Make sure that each phrase contains only letters and spaces, so players won’ t need to guess punctuation or special characters.
+const phrases = ['I Love Coding', 'JavaScript is Awesome', 'Learn to Refactor', 'Ramen and Pizza Diet', 'A Life of Learning'],
 
 // Create a getRandomPhraseAsArray function.
 
@@ -28,6 +39,10 @@
 // and to use the function, you’ll pass in the phrases array as an argument when you call the function:
 
 // getRandomPhraseAsArray(phrases);
+getRandomPhraseAsArray = (array) => {
+    const randomNum = Math.random() * (array.length - 0) + 0;
+    return array[randomNum];
+};
 
 // Set the game display.
 
