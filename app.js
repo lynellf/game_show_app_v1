@@ -17,7 +17,7 @@ const startButton = document.querySelector('.btn__reset');;
 startButton.addEventListener('click', (event) => {
     const startOverlay = event.target.parentNode;
     if(startOverlay.className === 'start') {
-        startOverlay.style.opacity = '0';
+        startOverlay.style.display = 'none';
     }
 });
 
@@ -30,7 +30,7 @@ const phrases = ['I Love Coding', 'JavaScript is Awesome', 'Learn to Refactor', 
 // This function should randomly choose a phrase from the phrases array and split that phrase into a new array of characters.
 // The function should then return the new character array.
 // Keep in mind that you’ ll need to write this function so that it is reusable--meaning that it can take any given array of strings(with no special characters) and
-// return an array of characters. To do that, you’ ll write thefunction so that it takes an array as an parameter:
+// return an array of characters. To do that, you’ ll write the function so that it takes an array as an parameter:
 
 // function getRandomPhraseArray(arr) {
 //     //do stuff to any arr that is passed in 
@@ -40,15 +40,18 @@ const phrases = ['I Love Coding', 'JavaScript is Awesome', 'Learn to Refactor', 
 
 // getRandomPhraseAsArray(phrases);
 getRandomPhraseAsArray = (array) => {
-    const randomNum = Math.random() * (array.length - 0) + 0;
+    const max = (Math.floor(array.length));
+    const min = 0;
+    let randomNum = Math.floor(Math.random() * (max - min) + min);
     return array[randomNum];
-};
+},
 
 // Set the game display.
 
 // Create an addPhraseToDisplay function that loops through an array of characters.Inside the loop,
 // for each character in the array, you’ ll create a list item, put the character inside of the list item,
-// and append that list item to the# phrase ul in your HTML.If the character in the array is a letter and not a space, 
+// and append that list item to the# phrase ul in your HTML.
+// If the character in the array is a letter and not a space, 
 // the function should add the class“ letter” to the list item.
 // You’ ll need to write the addPhraseToDisplay function so that it can take any array of letters and add it to the display.
 // To do that, the function will need to take an array as a parameter:
@@ -57,10 +60,23 @@ getRandomPhraseAsArray = (array) => {
 //     // do stuff any arr that is passed in, and add to `#phrase ul`
 // }
 
+addPhrasetoDisplay = (string) => {
+    for(let i = 0; i < string.length; i++) {
+        let listItem = document.createElement('li'),
+        listContent = document.createTextNode(string[i]);
+        if(string[i] !== ' ') {
+            listItem.className = 'letter';
+        }
+        listItem.appendChild(listContent);
+        phrase.appendChild(listItem);
+    }
+},
+
 // To use the function, you’ll get the value returned by the getRandomPhrasesArray, save it to a variable, and pass it to addPhraseToDisplay as an argument:
 
-// const phraseArray = getRandomPhraseAsArray(phrases);
+phraseArray = getRandomPhraseAsArray(phrases);
 // addPhrasetoDisplay(phraseArray);
+addPhrasetoDisplay(phraseArray);
 
 
 // Create a checkLetter function.
@@ -83,6 +99,27 @@ getRandomPhraseAsArray = (array) => {
 
 // Note that button elements have an attribute you can set called“ disabled” that when set to true will not respond to user clicks.See the MDN documentation for more details. Pass the button to the checkLetter
 // function, and store the letter returned inside of a variable called letterFound.At this point, you can open the index.html file, click any of the letters on the keyboard, and start to see the letters appear in the phrase.
+
+qwerty.addEventListener('click', (event) => {
+    let button;
+    const checkLetter = (letter) => {
+        let letters = document.querySelectorAll('.letter');
+        for(let i = 0; i < letters.length; i++) {
+            let currentLetter = letters[i].innerHTML.toLowerCase();
+            if(letter === currentLetter) {
+                letters[i].className += ' show';
+            } else {
+                return null;
+            }
+        }
+    }
+    if (event.target.tagName === "BUTTON") {
+        button = event.target.textContent.toLowerCase();
+        event.target.className = 'chosen';
+    }
+    checkLetter(button);
+    console.log(event.target.tagName);
+})
 
 
 // Count the missed guesses in the game.
