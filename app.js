@@ -36,7 +36,9 @@ function restart() {
     }
     for (let i = 0; i < chosen.length; i++) {
         chosen[i].className = '';
+        chosen.disabled = false;
     }
+    missed = 0;
     getRandomPhraseAsArray(phrases);
     addPhrasetoDisplay(phraseArray);
 }
@@ -122,54 +124,52 @@ addPhrasetoDisplay(phraseArray);
 // function, and store the letter returned inside of a variable called letterFound.At this point, you can open the index.html file, click any of the letters on the keyboard, and start to see the letters appear in the phrase.
 
 qwerty.addEventListener('click', (event) => {
-    let button,
-    letterFound = '';
-    const checkLetter = (letter) => {
-        let letters = document.querySelectorAll('.letter');
-        // for(let i = 0; i < letters.length; i++) {
-        //     let currentLetter = letters[i].innerHTML.toLowerCase();
-        //     if(letter === currentLetter) {
-        //         letterFound = letter;
-        //         letters[i].className += ' show';
-        //         return letterFound;
-        //     } else if (letter !== currentLetter) {
-        //         letterFound = null;
-        //         return letterFound;
-        //     }
-        // }
-        letters.forEach(item => {
-            let currentLetter = item.innerHTML.toLowerCase();
-            if (currentLetter === letter) {
-                item.className += ' show';
-            }
-        });
-    },
-    checkWin = () => {
-        const revealedLetters = document.querySelectorAll('.show'),
-        lettersInPhrase = document.querySelectorAll('.letter');
-        let startOverlay = document.querySelector('#overlay'),
-        overlayTitle = document.querySelector('.title');
-
-        if(revealedLetters == lettersInPhrase) {
-            startOverlay.style.display = '';
-            startOverlay.className = 'win';
-            overlayTitle.textContent = 'You Win!';
-        } else if (missed <= -5) {
-            startOverlay.style.display = '';
-            startOverlay.className = 'lose';
-            overlayTitle.textContent = 'You Lose!';
-        }
-    };
     if (event.target.tagName === "BUTTON") {
+        let button,
+        letterFound = '';
+        const checkLetter = (letter) => {
+            let letters = document.querySelectorAll('.letter'),
+            matchedLetterCount = 0;
+            letters.forEach(item => {
+                let currentLetter = item.innerHTML.toLowerCase();
+                if (currentLetter === letter) {
+                    item.className += ' show';
+                    matchedLetterCount += 1;
+                }
+            });
+            if (matchedLetterCount === 0) {
+                letterFound = null;
+                matchedLetterCount = 0;
+            } else if(matchedLetterCount > 0) {
+                letterFound = letter;
+                matchedLetterCount = 0;
+            }
+        },
+        checkWin = () => {
+            const revealedLetters = document.querySelectorAll('.show'),
+            lettersInPhrase = document.querySelectorAll('.letter');
+            let startOverlay = document.querySelector('#overlay'),
+            overlayTitle = document.querySelector('.title');
+    
+            if(revealedLetters.length === lettersInPhrase.length) {
+                startOverlay.style.display = '';
+                startOverlay.className = 'win';
+                overlayTitle.textContent = 'You Win!';
+            } else if (missed <= -5) {
+                startOverlay.style.display = '';
+                startOverlay.className = 'lose';
+                overlayTitle.textContent = 'You Lose!';
+            }
+        };
         button = event.target.textContent.toLowerCase();
         event.target.className = 'chosen';
+        event.target.disabled = true;
+        checkLetter(button);
+        if (letterFound === null) {
+            missed -= 1;
+        }
+        checkWin();
     }
-    checkLetter(button);
-    if (letterFound === null) {
-        missed -= 1;
-    }
-    checkWin();
-    
 })
 
 
