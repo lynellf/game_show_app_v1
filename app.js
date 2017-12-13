@@ -15,11 +15,31 @@ const startButton = document.querySelector('.btn__reset');;
 
 // Attach a event listener to the“ Start Game” button to hide the start screen overlay.
 startButton.addEventListener('click', (event) => {
-    const startOverlay = event.target.parentNode;
-    if(startOverlay.className === 'start') {
+    const startOverlay = event.target.parentNode,
+    oldLetters = document.querySelector('letter')
+    if(startOverlay.className === 'start' || startOverlay.className === 'win' || startOverlay.className === 'lose') {
+        restart();
         startOverlay.style.display = 'none';
     }
 });
+
+// Function to wipe the letters and start fresh
+
+function restart() {
+    const phraseUl = phrase.childNodes[0].nextElementSibling,
+    chosen = document.querySelectorAll('.chosen');
+    oldLetters = phraseUl.childNodes;
+    while (oldLetters.length > 0) {
+        oldLetters.forEach(letter => {
+            letter.remove();
+        });
+    }
+    for (let i = 0; i < chosen.length; i++) {
+        chosen[i].className = '';
+    }
+    getRandomPhraseAsArray(phrases);
+    addPhrasetoDisplay(phraseArray);
+}
 
 // Create a phrases array that contains at least 5 different phrases as strings.
 //     Make sure that each phrase contains only letters and spaces, so players won’ t need to guess punctuation or special characters.
@@ -61,6 +81,7 @@ getRandomPhraseAsArray = (array) => {
 // }
 
 addPhrasetoDisplay = (string) => {
+    const phraseList = phrase.childNodes[0].nextElementSibling;
     for(let i = 0; i < string.length; i++) {
         let listItem = document.createElement('li'),
         listContent = document.createTextNode(string[i]);
@@ -68,7 +89,7 @@ addPhrasetoDisplay = (string) => {
             listItem.className = 'letter';
         }
         listItem.appendChild(listContent);
-        phrase.appendChild(listItem);
+        phraseList.appendChild(listItem);
     }
 },
 
@@ -101,24 +122,54 @@ addPhrasetoDisplay(phraseArray);
 // function, and store the letter returned inside of a variable called letterFound.At this point, you can open the index.html file, click any of the letters on the keyboard, and start to see the letters appear in the phrase.
 
 qwerty.addEventListener('click', (event) => {
-    let button;
+    let button,
+    letterFound = '';
     const checkLetter = (letter) => {
         let letters = document.querySelectorAll('.letter');
-        for(let i = 0; i < letters.length; i++) {
-            let currentLetter = letters[i].innerHTML.toLowerCase();
-            if(letter === currentLetter) {
-                letters[i].className += ' show';
-            } else {
-                return null;
+        // for(let i = 0; i < letters.length; i++) {
+        //     let currentLetter = letters[i].innerHTML.toLowerCase();
+        //     if(letter === currentLetter) {
+        //         letterFound = letter;
+        //         letters[i].className += ' show';
+        //         return letterFound;
+        //     } else if (letter !== currentLetter) {
+        //         letterFound = null;
+        //         return letterFound;
+        //     }
+        // }
+        letters.forEach(item => {
+            let currentLetter = item.innerHTML.toLowerCase();
+            if (currentLetter === letter) {
+                item.className += ' show';
             }
+        });
+    },
+    checkWin = () => {
+        const revealedLetters = document.querySelectorAll('.show'),
+        lettersInPhrase = document.querySelectorAll('.letter');
+        let startOverlay = document.querySelector('#overlay'),
+        overlayTitle = document.querySelector('.title');
+
+        if(revealedLetters == lettersInPhrase) {
+            startOverlay.style.display = '';
+            startOverlay.className = 'win';
+            overlayTitle.textContent = 'You Win!';
+        } else if (missed <= -5) {
+            startOverlay.style.display = '';
+            startOverlay.className = 'lose';
+            overlayTitle.textContent = 'You Lose!';
         }
-    }
+    };
     if (event.target.tagName === "BUTTON") {
         button = event.target.textContent.toLowerCase();
         event.target.className = 'chosen';
     }
     checkLetter(button);
-    console.log(event.target.tagName);
+    if (letterFound === null) {
+        missed -= 1;
+    }
+    checkWin();
+    
 })
 
 
@@ -136,7 +187,7 @@ qwerty.addEventListener('click', (event) => {
 // Create a checkWin function.
 
 // Each time the player guesses a letter, this
-// function will check whether the game has been won or lost.At the very end of the keyboard event listener, you’ ll run this  function to check
+// function will check whether the game has been won or lost. At the very end of the keyboard event listener, you’ ll run this  function to check
 
 // if the number of letters with class“ show” is equal to the number of letters with class“ letters”.If they’ re equal, show the overlay screen with the“ win” class and appropriate text.
 // Otherwise, if the number of misses is equal to or greater than 5, show the overlay screen with the“ lose” class and appropriate text.
