@@ -28,7 +28,8 @@ startButton.addEventListener('click', (event) => {
 function restart() {
     const phraseUl = phrase.childNodes[0].nextElementSibling,
     chosen = document.querySelectorAll('.chosen');
-    oldLetters = phraseUl.childNodes;
+    oldLetters = phraseUl.childNodes,
+    tries = document.querySelectorAll('.tries');
     while (oldLetters.length > 0) {
         oldLetters.forEach(letter => {
             letter.remove();
@@ -37,6 +38,14 @@ function restart() {
     for (let i = 0; i < chosen.length; i++) {
         chosen[i].className = '';
         chosen.disabled = false;
+    }
+    if(tries.length !== 5 || tries === null || tries === undefined) {
+        for (let i = 0; i < tries.length; i++) {
+            const attempt = document.createElement('li'),
+            tryList = document.querySelector('ol');
+            attempt.cassName = 'tries';
+            tryList.appendChild(attempt);
+        }
     }
     missed = 0;
     getRandomPhraseAsArray(phrases);
@@ -126,7 +135,9 @@ addPhrasetoDisplay(phraseArray);
 qwerty.addEventListener('click', (event) => {
     if (event.target.tagName === "BUTTON") {
         let button,
-        letterFound = '';
+        letterFound = '',
+        tries = document.querySelectorAll('.tries');
+        
         const checkLetter = (letter) => {
             let letters = document.querySelectorAll('.letter'),
             matchedLetterCount = 0;
@@ -155,7 +166,7 @@ qwerty.addEventListener('click', (event) => {
                 startOverlay.style.display = '';
                 startOverlay.className = 'win';
                 overlayTitle.textContent = 'You Win!';
-            } else if (missed <= -5) {
+            } else if (missed === 5) {
                 startOverlay.style.display = '';
                 startOverlay.className = 'lose';
                 overlayTitle.textContent = 'You Lose!';
@@ -166,7 +177,9 @@ qwerty.addEventListener('click', (event) => {
         event.target.disabled = true;
         checkLetter(button);
         if (letterFound === null) {
-            missed -= 1;
+            let counter = missed;
+            tries[0].remove();
+            missed += 1;
         }
         checkWin();
     }
