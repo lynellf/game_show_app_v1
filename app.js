@@ -27,34 +27,57 @@ startButton.addEventListener('click', (event) => {
 
 function restart() {
     const phraseUl = phrase.childNodes[0].nextElementSibling,
-    chosen = document.querySelectorAll('.chosen');
+    buttons = document.querySelectorAll('button');
     oldLetters = phraseUl.childNodes,
-    tries = document.querySelectorAll('.tries');
+    tryList = document.querySelector('ol'),
+    tries = document.querySelectorAll('.tries'),
+    heartImg = 'images/liveHeart.png';
+    let newPhrases = [
+        'I Love Coding',
+        'JavaScript is Awesome',
+        'Learn to Refactor',
+        'Ramen and Pizza Diet',
+        'A Life of Learning'
+    ];
+
     while (oldLetters.length > 0) {
         oldLetters.forEach(letter => {
             letter.remove();
         });
     }
-    for (let i = 0; i < chosen.length; i++) {
-        chosen[i].className = '';
-        chosen.disabled = false;
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].className = '';
+        buttons[i].disabled = false;
     }
-    if(tries.length !== 5 || tries === null || tries === undefined) {
-        for (let i = 0; i < tries.length; i++) {
+    if(tries.length !== 5) {
+        for (let i = 0; i < (5 - tries.length); i++) {
             const attempt = document.createElement('li'),
-            tryList = document.querySelector('ol');
-            attempt.cassName = 'tries';
+            image = new Image(36.5, 35);
+            image.src = heartImg;
+            image.className = '__web-inspector-hide-shortcut__';
             tryList.appendChild(attempt);
+            attempt.appendChild(image);
         }
+    const listofTries = document.querySelectorAll('ol > li');
+        listofTries.forEach(attempt => {
+            // attempt.appendChild(image);
+            attempt.className = 'tries';
+        });
     }
     missed = 0;
-    getRandomPhraseAsArray(phrases);
+    phraseArray = getRandomPhraseAsArray(newPhrases);
     addPhrasetoDisplay(phraseArray);
 }
 
 // Create a phrases array that contains at least 5 different phrases as strings.
 //     Make sure that each phrase contains only letters and spaces, so players won’ t need to guess punctuation or special characters.
-const phrases = ['I Love Coding', 'JavaScript is Awesome', 'Learn to Refactor', 'Ramen and Pizza Diet', 'A Life of Learning'],
+const phrases = [
+    'I Love Coding', 
+    'JavaScript is Awesome', 
+    'Learn to Refactor', 
+    'Ramen and Pizza Diet', 
+    'A Life of Learning'
+],
 
 // Create a getRandomPhraseAsArray function.
 
@@ -102,11 +125,11 @@ addPhrasetoDisplay = (string) => {
         listItem.appendChild(listContent);
         phraseList.appendChild(listItem);
     }
-},
+};
 
 // To use the function, you’ll get the value returned by the getRandomPhrasesArray, save it to a variable, and pass it to addPhraseToDisplay as an argument:
 
-phraseArray = getRandomPhraseAsArray(phrases);
+let phraseArray = getRandomPhraseAsArray(phrases);
 // addPhrasetoDisplay(phraseArray);
 addPhrasetoDisplay(phraseArray);
 
