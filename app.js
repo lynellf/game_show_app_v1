@@ -37,6 +37,8 @@
                 listContent = document.createTextNode(string[i]);
             if (string[i] !== ' ') {
                 listItem.className = 'letter';
+            } else {
+                listItem.className = 'space';
             }
             listItem.appendChild(listContent);
             phraseList.appendChild(listItem);
